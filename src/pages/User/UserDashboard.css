@@ -1,0 +1,478 @@
+.user-dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  color: var(--gray);
+  font-size: 1.1rem;
+}
+
+/* Welcome Banner */
+.welcome-banner {
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.welcome-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.2);
+}
+.welcome-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.welcome-greeting {
+  color: rgba(255,255,255,0.7);
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+.welcome-name {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+.welcome-city {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.95rem;
+}
+.welcome-time {
+  text-align: right;
+}
+.time-display {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+}
+.date-display {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.9rem;
+}
+
+/* Quick Stats */
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: var(--transition);
+  border: 1px solid #e5e7eb;
+}
+.stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+.stat-value {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dark);
+  display: block;
+}
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Cards */
+.dash-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+  transition: var(--transition);
+}
+.dash-card:hover {
+  box-shadow: var(--shadow-md);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.card-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+.card-badge {
+  padding: 4px 10px;
+  background: #f3f4f6;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray);
+}
+.live-badge {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  animation: pulse 2s ease-in-out infinite;
+}
+.card-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.card-link:hover {
+  color: var(--primary-dark);
+}
+
+/* Weather */
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.weather-icon {
+  font-size: 3rem;
+}
+.weather-temp {
+  display: flex;
+  align-items: flex-start;
+}
+.temp-value {
+  font-family: 'Poppins', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1;
+}
+.temp-unit {
+  font-size: 1.2rem;
+  color: var(--gray);
+  margin-top: 6px;
+}
+.weather-condition {
+  color: var(--gray);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+.weather-details {
+  display: flex;
+  gap: 24px;
+}
+.weather-detail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gray);
+  font-size: 0.85rem;
+}
+.weather-detail strong {
+  color: var(--dark);
+}
+
+/* AQI */
+.aqi-content {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.aqi-gauge {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 6px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.aqi-value {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.aqi-label {
+  font-size: 0.75rem;
+  color: var(--gray);
+  font-weight: 600;
+}
+.aqi-info {
+  flex: 1;
+}
+.aqi-level {
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 12px;
+}
+.aqi-bar {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.aqi-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+.aqi-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--gray-light);
+}
+
+/* Traffic */
+.traffic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.traffic-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.traffic-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.traffic-road {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--dark);
+  display: block;
+}
+.traffic-status {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* News */
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.news-item {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.news-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.news-category {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.news-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.news-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--gray-light);
+}
+
+/* Emergency */
+.emergency-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.emergency-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: #f9fafb;
+  border-radius: var(--radius-sm);
+}
+.emergency-icon {
+  font-size: 1.5rem;
+}
+.emergency-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--dark);
+  display: block;
+}
+.emergency-number {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* Map */
+.map-card {
+  grid-column: span 2;
+}
+.map-preview {
+  height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+/* Famous Places */
+.places-scroll {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.place-mini-card {
+  height: 120px;
+  border-radius: var(--radius);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.place-mini-card:hover {
+  transform: scale(1.03);
+}
+.place-mini-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 40%, rgba(0,0,0,0.8));
+  display: flex;
+  align-items: flex-end;
+  padding: 10px;
+}
+.place-mini-overlay h4 {
+  color: white;
+  font-size: 0.8rem;
+}
+
+/* Quick Actions */
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.quick-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  background: #f9fafb;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--dark);
+}
+.quick-action:hover {
+  background: rgba(99, 102, 241, 0.05);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.qa-icon {
+  font-size: 1.8rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .map-card {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 768px) {
+  .quick-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .map-card {
+    grid-column: span 1;
+  }
+  .welcome-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  .welcome-time {
+    text-align: center;
+  }
+  .welcome-name {
+    font-size: 1.5rem;
+  }
+  .places-scroll {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .emergency-list {
+    grid-template-columns: 1fr;
+  }
+}

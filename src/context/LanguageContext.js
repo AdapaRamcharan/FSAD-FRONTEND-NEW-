@@ -1,0 +1,147 @@
+import React, { createContext, useContext, useState } from 'react';
+
+const LanguageContext = createContext(null);
+export const useLanguage = () => useContext(LanguageContext);
+
+const translations = {
+  en: {
+    welcome: 'Welcome to Smart City',
+    tagline: 'Transforming Urban Living Through Digital Innovation',
+    explore: 'Explore Cities',
+    signin: 'Sign In',
+    signup: 'Sign Up',
+    dashboard: 'Dashboard',
+    reportIssue: 'Report an Issue',
+    findNearMe: 'Find Near Me',
+    feedback: 'Feedback',
+    news: 'Daily News',
+    weather: 'Weather',
+    airQuality: 'Air Quality',
+    traffic: 'Traffic',
+    emergency: 'Emergency Contacts',
+    famousPlaces: 'Famous Places',
+    cityInfo: 'City Information',
+    services: 'Public Services',
+    amenities: 'Amenities',
+    logout: 'Logout',
+    profile: 'Profile',
+    settings: 'Settings',
+    search: 'Search...',
+    hospitals: 'Hospitals',
+    parks: 'Parks',
+    policeStations: 'Police Stations',
+    petrolBunks: 'Petrol Bunks',
+    hotels: 'Hotels',
+    submit: 'Submit',
+    cancel: 'Cancel',
+    status: 'Status',
+    pending: 'Pending',
+    inProgress: 'In Progress',
+    resolved: 'Resolved',
+    manageReports: 'Manage Reports',
+    analytics: 'Analytics',
+    users: 'Users',
+    cities: 'Cities',
+    alerts: 'Smart Alerts',
+    language: 'Language',
+  },
+  hi: {
+    welcome: 'स्मार्ट सिटी में आपका स्वागत है',
+    tagline: 'डिजिटल नवाचार के माध्यम से शहरी जीवन को बदलना',
+    explore: 'शहर देखें',
+    signin: 'साइन इन',
+    signup: 'साइन अप',
+    dashboard: 'डैशबोर्ड',
+    reportIssue: 'समस्या की रिपोर्ट करें',
+    findNearMe: 'मेरे पास खोजें',
+    feedback: 'प्रतिक्रिया',
+    news: 'दैनिक समाचार',
+    weather: 'मौसम',
+    airQuality: 'वायु गुणवत्ता',
+    traffic: 'यातायात',
+    emergency: 'आपातकालीन संपर्क',
+    famousPlaces: 'प्रसिद्ध स्थान',
+    cityInfo: 'शहर की जानकारी',
+    services: 'सार्वजनिक सेवाएँ',
+    amenities: 'सुविधाएँ',
+    logout: 'लॉगआउट',
+    profile: 'प्रोफ़ाइल',
+    settings: 'सेटिंग्स',
+    search: 'खोजें...',
+    hospitals: 'अस्पताल',
+    parks: 'पार्क',
+    policeStations: 'पुलिस स्टेशन',
+    petrolBunks: 'पेट्रोल पंप',
+    hotels: 'होटल',
+    submit: 'जमा करें',
+    cancel: 'रद्द करें',
+    status: 'स्थिति',
+    pending: 'लंबित',
+    inProgress: 'प्रगति में',
+    resolved: 'हल किया',
+    manageReports: 'रिपोर्ट प्रबंधित करें',
+    analytics: 'विश्लेषण',
+    users: 'उपयोगकर्ता',
+    cities: 'शहर',
+    alerts: 'स्मार्ट अलर्ट',
+    language: 'भाषा',
+  },
+  te: {
+    welcome: 'స్మార్ట్ సిటీకి స్వాగతం',
+    tagline: 'డిజిటల్ ఆవిష్కరణ ద్వారా పట్టణ జీవనాన్ని మార్చడం',
+    explore: 'నగరాలను అన్వేషించండి',
+    signin: 'సైన్ ఇన్',
+    signup: 'సైన్ అప్',
+    dashboard: 'డాష్‌బోర్డ్',
+    reportIssue: 'సమస్యను నివేదించండి',
+    findNearMe: 'నా దగ్గర కనుగొనండి',
+    feedback: 'అభిప్రాయం',
+    news: 'దినసరి వార్తలు',
+    weather: 'వాతావరణం',
+    airQuality: 'గాలి నాణ్యత',
+    traffic: 'ట్రాఫిక్',
+    emergency: 'అత్యవసర సంప్రదింపులు',
+    famousPlaces: 'ప్రసిద్ధ ప్రదేశాలు',
+    cityInfo: 'నగర సమాచారం',
+    services: 'ప్రజా సేవలు',
+    amenities: 'సౌకర్యాలు',
+    logout: 'లాగ్ అవుట్',
+    profile: 'ప్రొఫైల్',
+    settings: 'సెట్టింగ్‌లు',
+    search: 'వెతకండి...',
+    hospitals: 'ఆసుపత్రులు',
+    parks: 'పార్కులు',
+    policeStations: 'పోలీస్ స్టేషన్లు',
+    petrolBunks: 'పెట్రోల్ బంకులు',
+    hotels: 'హోటళ్లు',
+    submit: 'సమర్పించండి',
+    cancel: 'రద్దు',
+    status: 'స్థితి',
+    pending: 'పెండింగ్',
+    inProgress: 'ప్రగతిలో',
+    resolved: 'పరిష్కరించబడింది',
+    manageReports: 'నివేదికలను నిర్వహించండి',
+    analytics: 'విశ్లేషణలు',
+    users: 'వినియోగదారులు',
+    cities: 'నగరాలు',
+    alerts: 'స్మార్ట్ అలర్ట్‌లు',
+    language: 'భాష',
+  }
+};
+
+export const LanguageProvider = ({ children }) => {
+  const [language, setLanguage] = useState('en');
+
+  const t = (key) => translations[language]?.[key] || translations.en[key] || key;
+
+  const changeLanguage = (lang) => {
+    setLanguage(lang);
+    localStorage.setItem('smartcity_lang', lang);
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, changeLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
