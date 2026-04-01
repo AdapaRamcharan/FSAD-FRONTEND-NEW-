@@ -25,7 +25,7 @@ const DashboardLayout = () => {
 
   const userLinks = [
     { path: `${basePath}/dashboard`, icon: <FiHome size={20} />, label: t('dashboard') },
-    { path: `${basePath}/city`, icon: <FiMap size={20} />, label: t('cityInfo') },
+    { path: `${basePath}/cities`, icon: <FiMap size={20} />, label: t('cities') },
     { path: `${basePath}/report`, icon: <FiAlertTriangle size={20} />, label: t('reportIssue') },
     { path: `${basePath}/find-near-me`, icon: <FiNavigation size={20} />, label: t('findNearMe') },
     { path: `${basePath}/feedback`, icon: <FiMessageSquare size={20} />, label: t('feedback') },
@@ -36,7 +36,7 @@ const DashboardLayout = () => {
     { path: `${basePath}/analytics`, icon: <FiBarChart2 size={20} />, label: t('analytics') },
     { path: `${basePath}/manage-reports`, icon: <FiAlertTriangle size={20} />, label: t('manageReports') },
     { path: `${basePath}/users`, icon: <FiUsers size={20} />, label: t('users') },
-    { path: `${basePath}/city`, icon: <FiMap size={20} />, label: t('cities') },
+    { path: `${basePath}/cities`, icon: <FiMap size={20} />, label: t('cities') },
     { path: `${basePath}/feedback`, icon: <FiMessageSquare size={20} />, label: t('feedback') },
   ];
 
@@ -50,12 +50,14 @@ const DashboardLayout = () => {
   const currentCity = selectedCity || cities.find(c => c.id === user?.city) || cities[0];
 
   React.useEffect(() => {
-    if (!selectedCity && user?.city) {
+    if (!cities.length || selectedCity) return;
+
+    if (user?.city && cities.some((city) => city.id === user.city)) {
       selectCity(user.city);
-    } else if (!selectedCity) {
+    } else {
       selectCity(cities[0].id);
     }
-  }, []); // eslint-disable-line
+  }, [cities, selectedCity, user?.city, selectCity]);
 
   const languages = [
     { code: 'en', label: 'English', flag: '🇬🇧' },

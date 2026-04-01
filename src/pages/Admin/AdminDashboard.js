@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useCity } from '../../context/CityContext';
-import { useLanguage } from '../../context/LanguageContext';
 import {
   FiUsers, FiAlertTriangle, FiCheckCircle, FiClock,
-  FiTrendingUp, FiMapPin, FiBarChart2, FiArrowUp, FiArrowDown,
+  FiMapPin, FiBarChart2, FiArrowUp, FiArrowDown,
   FiActivity, FiEye
 } from 'react-icons/fi';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler } from 'chart.js';
@@ -15,8 +14,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 
 const AdminDashboard = () => {
   const { user } = useAuth();
-  const { issues, cities, feedbacks } = useCity();
-  const { t } = useLanguage();
+  const { issues, cities, feedbacks, users, roleStats, loginHistory } = useCity();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -26,9 +24,8 @@ const AdminDashboard = () => {
 
   const totalIssues = issues.length;
   const pendingIssues = issues.filter(i => i.status === 'pending').length;
-  const inProgressIssues = issues.filter(i => i.status === 'in_progress').length;
+  const inProgressIssues = issues.filter(i => i.status === 'in-progress').length;
   const resolvedIssues = issues.filter(i => i.status === 'resolved').length;
-  const users = JSON.parse(localStorage.getItem('smartcity_users') || '[]');
   const totalUsers = users.length;
 
   // Issue status chart
@@ -80,7 +77,7 @@ const AdminDashboard = () => {
   const getStatusBadge = (status) => {
     const styles = {
       pending: { bg: 'rgba(245,158,11,0.1)', color: '#f59e0b', label: 'Pending' },
-      in_progress: { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', label: 'In Progress' },
+      'in-progress': { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', label: 'In Progress' },
       resolved: { bg: 'rgba(16,185,129,0.1)', color: '#10b981', label: 'Resolved' }
     };
     const s = styles[status] || styles.pending;
@@ -104,6 +101,9 @@ const AdminDashboard = () => {
         <div className="admin-welcome-left">
           <h1>Admin Dashboard</h1>
           <p>Welcome back, {user?.name}. Here's what's happening across your cities.</p>
+          <p style={{ marginTop: 8, fontSize: '0.9rem', color: '#64748b' }}>
+            Role Stats: {roleStats.admin} admins, {roleStats.user} users • Login Records: {loginHistory.length}
+          </p>
         </div>
         <div className="admin-welcome-right">
           <div className="admin-time">

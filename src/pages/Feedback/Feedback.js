@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useCity } from '../../context/CityContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { FiStar, FiMessageSquare, FiThumbsUp, FiSend } from 'react-icons/fi';
+import { FiStar, FiMessageSquare, FiSend } from 'react-icons/fi';
 import { toast, ToastContainer } from 'react-toastify';
 import './Feedback.css';
 
@@ -25,7 +25,7 @@ const Feedback = () => {
     { value: 'education', label: 'Education', icon: '🎓' }
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (rating === 0) {
       toast.error('Please provide a rating');
@@ -36,19 +36,23 @@ const Feedback = () => {
       return;
     }
 
-    addFeedback({
-      ...form,
-      rating,
-      city: selectedCity?.id,
-      cityName: selectedCity?.name,
-      userName: user?.name,
-      userEmail: user?.email,
-      userAvatar: user?.avatar
-    });
+    try {
+      await addFeedback({
+        ...form,
+        rating,
+        city: selectedCity?.id,
+        cityName: selectedCity?.name,
+        userName: user?.name,
+        userEmail: user?.email,
+        userAvatar: user?.avatar
+      });
 
-    toast.success('Thank you for your feedback!');
-    setForm({ category: 'general', message: '' });
-    setRating(0);
+      toast.success('Thank you for your feedback!');
+      setForm({ category: 'general', message: '' });
+      setRating(0);
+    } catch (error) {
+      toast.error(error.message || 'Unable to submit feedback');
+    }
   };
 
   const cityFeedbacks = feedbacks.filter(f => f.city === selectedCity?.id);

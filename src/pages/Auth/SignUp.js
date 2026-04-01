@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { cityData } from '../../data/cityData';
+import { useCity } from '../../context/CityContext';
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiAlertCircle, FiMapPin } from 'react-icons/fi';
 import './Auth.css';
 
 const SignUp = () => {
   const { signup, isAuthenticated, user } = useAuth();
+  const { cities } = useCity();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '', role: 'user', city: 'hyderabad' });
@@ -36,8 +37,9 @@ const SignUp = () => {
     }
 
     setLoading(true);
-    setTimeout(() => {
-      const result = signup({
+
+    try {
+      const result = await signup({
         name: form.name,
         email: form.email,
         password: form.password,
@@ -53,8 +55,11 @@ const SignUp = () => {
       } else {
         setError(result.message);
       }
+    } catch (error) {
+      setError(error.message || 'Signup failed');
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   return (
@@ -90,7 +95,7 @@ const SignUp = () => {
             </div>
 
             <div className="auth-city-previews">
-              {cityData.map(city => (
+              {cities.slice(0, 4).map(city => (
                 <div key={city.id} className="auth-city-pill">
                   <img
                     src={city.heroImage}
@@ -196,7 +201,7 @@ const SignUp = () => {
                   <div className="input-wrapper">
                     <FiMapPin className="input-icon" />
                     <select value={form.city} onChange={e => setForm({ ...form, city: e.target.value })}>
-                      {cityData.map(city => (
+                      {cities.map(city => (
                         <option key={city.id} value={city.id}>{city.name}</option>
                       ))}
                     </select>

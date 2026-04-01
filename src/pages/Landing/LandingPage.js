@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { cityData } from '../../data/cityData';
 import Navbar from '../../components/shared/Navbar';
-import { FiMapPin, FiShield, FiUsers, FiBarChart2, FiArrowRight, FiStar, FiGlobe, FiZap, FiMap, FiMessageSquare, FiChevronDown } from 'react-icons/fi';
+import { FiMapPin, FiShield, FiUsers, FiBarChart2, FiArrowRight, FiGlobe, FiZap, FiMap, FiChevronDown } from 'react-icons/fi';
 import './LandingPage.css';
 
 const LandingPage = () => {

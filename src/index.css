@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --primary: #6366f1;
-  --primary-dark: #4f46e5;
-  --primary-light: #818cf8;
-  --secondary: #0ea5e9;
-  --secondary-dark: #0284c7;
+  --primary: #dc2626;
+  --primary-dark: #b91c1c;
+  --primary-light: #ef4444;
+  --secondary: #f97316;
+  --secondary-dark: #ea580c;
   --accent: #f59e0b;
   --accent-dark: #d97706;
   --success: #10b981;
@@ -21,10 +21,10 @@
   --light: #f1f5f9;
   --light-2: #e2e8f0;
   --white: #ffffff;
-  --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  --gradient-1: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --gradient-2: linear-gradient(135deg, #fb7185 0%, #dc2626 100%);
+  --gradient-3: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+  --gradient-4: linear-gradient(135deg, #f43f5e 0%, #dc2626 100%);
   --gradient-hero: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
   --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
@@ -119,12 +119,12 @@ input, select, textarea {
 .btn-primary {
   background: var(--primary);
   color: white;
-  box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+  box-shadow: 0 4px 15px rgba(220,38,38,0.35);
 }
 .btn-primary:hover {
   background: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99,102,241,0.5);
+  box-shadow: 0 6px 20px rgba(220,38,38,0.45);
 }
 
 .btn-secondary {

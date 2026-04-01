@@ -5,10 +5,12 @@ import { FiNavigation, FiMapPin, FiSearch } from 'react-icons/fi';
 import './FindNearMe.css';
 
 const FindNearMe = () => {
-  const { selectedCity } = useCity();
+  const { selectedCity, searchAmenities } = useCity();
   const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState('hospitals');
   const [searchQuery, setSearchQuery] = useState('');
+  const [amenityResults, setAmenityResults] = useState([]);
+  const [loadingAmenities, setLoadingAmenities] = useState(false);
   const city = selectedCity;
 
   const amenityCategories = [
@@ -21,10 +23,12 @@ const FindNearMe = () => {
 
   if (!city) return <div className="loading-state">Select a city to explore amenities</div>;
 
-  const currentAmenities = city.amenities[activeCategory] || [];
-  const filteredAmenities = searchQuery
+  const currentAmenities = city?.amenities?.[activeCategory] || [];
+  const fallbackAmenities = searchQuery
     ? currentAmenities.filter(a => a.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : currentAmenities;
+
+  const filteredAmenities = amenityResults.length ? amenityResults : fallbackAmenities;
 
   const activeColor = amenityCategories.find(c => c.key === activeCategory)?.color || '#6366f1';
 
@@ -33,6 +37,31 @@ const FindNearMe = () => {
     const center = `${city.coordinates.lat},${city.coordinates.lng}`;
     const searchTerm = activeCategory.replace(/([A-Z])/g, ' $1').trim();
     return `https://www.google.com/maps/embed/v1/search?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${searchTerm}+in+${city.name}&center=${center}&zoom=13`;
+  };
+
+  const runAmenitySearch = async (value) => {
+    setSearchQuery(value);
+    if (!value.trim()) {
+      setAmenityResults([]);
+      return;
+    }
+
+    try {
+      setLoadingAmenities(true);
+      const result = await searchAmenities(`${value} ${activeCategory}`);
+      const normalized = result.map((a, idx) => ({
+        id: a.id || idx,
+        name: a.name || a.title || 'Amenity',
+        address: a.address || a.location || 'Address not available',
+        lat: a.lat || a.latitude || city.coordinates.lat,
+        lng: a.lng || a.longitude || city.coordinates.lng
+      }));
+      setAmenityResults(normalized);
+    } catch {
+      setAmenityResults([]);
+    } finally {
+      setLoadingAmenities(false);
+    }
   };
 
   return (
@@ -67,7 +96,7 @@ const FindNearMe = () => {
           type="text"
           placeholder={`Search ${amenityCategories.find(c => c.key === activeCategory)?.label}...`}
           value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
+          onChange={e => runAmenitySearch(e.target.value)}
         />
       </div>
 
@@ -91,6 +120,7 @@ const FindNearMe = () => {
             {amenityCategories.find(c => c.key === activeCategory)?.icon}{' '}
             {amenityCategories.find(c => c.key === activeCategory)?.label} ({filteredAmenities.length})
           </h3>
+          {loadingAmenities && <p style={{ color: '#64748b', marginBottom: 12 }}>Searching amenities...</p>}
           {filteredAmenities.map((amenity, i) => (
             <div key={i} className="amenity-card">
               <div className="amenity-icon" style={{ background: activeColor + '15', color: activeColor }}>

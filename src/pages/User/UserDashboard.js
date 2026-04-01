@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCity } from '../../context/CityContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { FiSun, FiCloud, FiWind, FiDroplet, FiAlertTriangle, FiMapPin, FiPhone, FiClock, FiTrendingUp, FiNavigation, FiExternalLink, FiArrowRight } from 'react-icons/fi';
+import { FiSun, FiWind, FiDroplet, FiAlertTriangle, FiMapPin, FiPhone, FiClock, FiTrendingUp, FiNavigation, FiExternalLink, FiArrowRight } from 'react-icons/fi';
 import './UserDashboard.css';
 
 const UserDashboard = () => {

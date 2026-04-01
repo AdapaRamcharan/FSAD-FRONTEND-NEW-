@@ -1,38 +1,35 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { FiSearch, FiUsers, FiShield, FiUser, FiMail, FiMapPin, FiCalendar, FiMoreVertical, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { useCity } from '../../context/CityContext';
+import { FiSearch, FiUsers, FiShield, FiUser, FiMail, FiMapPin, FiCalendar, FiEdit2 } from 'react-icons/fi';
 import { toast, ToastContainer } from 'react-toastify';
 import './Users.css';
 
 const Users = () => {
-  const { user: currentUser } = useAuth();
+  const { users } = useCity();
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
 
-  // Simulated users list
-  const [users] = useState([
-    { id: 1, name: 'Admin User', email: 'admin@smartcity.com', role: 'admin', city: 'hyderabad', avatar: `https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff`, joinDate: '2024-01-15', status: 'active' },
-    { id: 2, name: 'Rahul Sharma', email: 'rahul@gmail.com', role: 'user', city: 'hyderabad', avatar: `https://ui-avatars.com/api/?name=Rahul+Sharma&background=10b981&color=fff`, joinDate: '2024-02-20', status: 'active' },
-    { id: 3, name: 'Priya Iyer', email: 'priya@gmail.com', role: 'user', city: 'chennai', avatar: `https://ui-avatars.com/api/?name=Priya+Iyer&background=f59e0b&color=fff`, joinDate: '2024-03-10', status: 'active' },
-    { id: 4, name: 'Amit Patel', email: 'amit@gmail.com', role: 'user', city: 'mumbai', avatar: `https://ui-avatars.com/api/?name=Amit+Patel&background=ef4444&color=fff`, joinDate: '2024-03-22', status: 'active' },
-    { id: 5, name: 'Sneha Reddy', email: 'sneha@gmail.com', role: 'user', city: 'hyderabad', avatar: `https://ui-avatars.com/api/?name=Sneha+Reddy&background=8b5cf6&color=fff`, joinDate: '2024-04-05', status: 'active' },
-    { id: 6, name: 'Vikram Singh', email: 'vikram@gmail.com', role: 'admin', city: 'delhi', avatar: `https://ui-avatars.com/api/?name=Vikram+Singh&background=ec4899&color=fff`, joinDate: '2024-04-12', status: 'active' },
-    { id: 7, name: 'Ananya Nair', email: 'ananya@gmail.com', role: 'user', city: 'chennai', avatar: `https://ui-avatars.com/api/?name=Ananya+Nair&background=14b8a6&color=fff`, joinDate: '2024-05-01', status: 'inactive' },
-    { id: 8, name: 'Karthik Murthy', email: 'karthik@gmail.com', role: 'user', city: 'mumbai', avatar: `https://ui-avatars.com/api/?name=Karthik+Murthy&background=f97316&color=fff`, joinDate: '2024-05-15', status: 'active' },
-    { id: 9, name: 'Deepika Joshi', email: 'deepika@gmail.com', role: 'user', city: 'delhi', avatar: `https://ui-avatars.com/api/?name=Deepika+Joshi&background=06b6d4&color=fff`, joinDate: '2024-06-02', status: 'active' },
-    { id: 10, name: 'Ravi Kumar', email: 'ravi@gmail.com', role: 'user', city: 'hyderabad', avatar: `https://ui-avatars.com/api/?name=Ravi+Kumar&background=84cc16&color=fff`, joinDate: '2024-06-18', status: 'inactive' }
-  ]);
+  const normalizedUsers = users.map((u, idx) => ({
+    id: u.id || u.userId || idx + 1,
+    name: u.name || u.fullName || 'User',
+    email: u.email || 'N/A',
+    role: (u.role || 'user').toLowerCase(),
+    city: u.city || u.cityId || 'n/a',
+    avatar: u.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name || 'User')}&background=6366f1&color=fff`,
+    joinDate: u.joinDate || u.createdAt || new Date().toISOString(),
+    status: (u.status || 'active').toLowerCase()
+  }));
 
-  const filtered = users.filter(u => {
+  const filtered = normalizedUsers.filter(u => {
     const matchSearch = u.name.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase());
     const matchRole = roleFilter === 'all' || u.role === roleFilter;
     return matchSearch && matchRole;
   });
 
-  const adminCount = users.filter(u => u.role === 'admin').length;
-  const userCount = users.filter(u => u.role === 'user').length;
-  const activeCount = users.filter(u => u.status === 'active').length;
+  const adminCount = normalizedUsers.filter(u => u.role === 'admin').length;
+  const userCount = normalizedUsers.filter(u => u.role === 'user').length;
+  const activeCount = normalizedUsers.filter(u => u.status === 'active').length;
 
   return (
     <div className="users-page">
@@ -50,7 +47,7 @@ const Users = () => {
         <div className="usr-stat-card">
           <div className="usr-stat-icon" style={{ background: '#eef2ff', color: '#6366f1' }}><FiUsers size={20} /></div>
           <div>
-            <span className="usr-stat-count">{users.length}</span>
+            <span className="usr-stat-count">{normalizedUsers.length}</span>
             <span className="usr-stat-label">Total Users</span>
           </div>
         </div>

@@ -32,9 +32,13 @@ const ManageReports = () => {
     resolved: allIssues.filter(i => i.status === 'resolved').length
   };
 
-  const handleStatusChange = (issueId, newStatus) => {
-    updateIssueStatus(issueId, newStatus);
-    toast.success(`Issue status updated to "${newStatus}"`);
+  const handleStatusChange = async (issueId, newStatus) => {
+    try {
+      await updateIssueStatus(issueId, newStatus);
+      toast.success(`Issue status updated to "${newStatus}"`);
+    } catch (error) {
+      toast.error(error.message || 'Unable to update issue status');
+    }
   };
 
   const getStatusIcon = (status) => {
@@ -221,8 +225,8 @@ const ManageReports = () => {
                     <button
                       key={st}
                       className={`modal-status-btn status-${st} ${selectedIssue.status === st ? 'active' : ''}`}
-                      onClick={() => {
-                        handleStatusChange(selectedIssue.id, st);
+                      onClick={async () => {
+                        await handleStatusChange(selectedIssue.id, st);
                         setSelectedIssue({ ...selectedIssue, status: st });
                       }}
                     >

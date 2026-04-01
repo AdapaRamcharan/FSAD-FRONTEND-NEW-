@@ -12,6 +12,7 @@ import DashboardLayout from './components/layout/DashboardLayout';
 
 // User Pages
 import UserDashboard from './pages/User/UserDashboard';
+import Cities from './pages/City/Cities';
 import CityDetails from './pages/City/CityDetails';
 import ReportIssue from './pages/Report/ReportIssue';
 import FindNearMe from './pages/FindNearMe/FindNearMe';
@@ -64,6 +65,7 @@ function App() {
       >
         <Route index element={<UserDashboard />} />
         <Route path="dashboard" element={<UserDashboard />} />
+        <Route path="cities" element={<Cities />} />
         <Route path="city" element={<CityDetails />} />
         <Route path="report" element={<ReportIssue />} />
         <Route path="find-near-me" element={<FindNearMe />} />
@@ -84,6 +86,7 @@ function App() {
         <Route path="manage-reports" element={<ManageReports />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="users" element={<Users />} />
+        <Route path="cities" element={<Cities />} />
         <Route path="city" element={<CityDetails />} />
         <Route path="feedback" element={<Feedback />} />
       </Route>

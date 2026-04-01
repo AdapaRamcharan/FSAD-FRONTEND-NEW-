@@ -26,8 +26,8 @@ const SignIn = () => {
     setError('');
     setLoading(true);
 
-    setTimeout(() => {
-      const result = login(form.email, form.password);
+    try {
+      const result = await login(form.email, form.password);
       if (result.success) {
         if (result.user.role === 'admin') {
           navigate('/admin/dashboard');
@@ -37,8 +37,11 @@ const SignIn = () => {
       } else {
         setError(result.message);
       }
+    } catch (error) {
+      setError(error.message || 'Login failed');
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   return (

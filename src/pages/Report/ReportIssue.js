@@ -30,34 +30,38 @@ const ReportIssue = () => {
     { value: 'sewage', label: 'Sewage', icon: '🚰' }
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title || !form.description || !form.location) {
       toast.error('Please fill all required fields');
       return;
     }
 
-    addIssue({
-      ...form,
-      city: selectedCity?.id,
-      reportedBy: user?.name,
-      reporterEmail: user?.email,
-      lat: selectedCity?.coordinates.lat + (Math.random() - 0.5) * 0.05,
-      lng: selectedCity?.coordinates.lng + (Math.random() - 0.5) * 0.05
-    });
+    try {
+      await addIssue({
+        ...form,
+        city: selectedCity?.id,
+        reportedBy: user?.name,
+        reporterEmail: user?.email,
+        lat: selectedCity?.coordinates.lat + (Math.random() - 0.5) * 0.05,
+        lng: selectedCity?.coordinates.lng + (Math.random() - 0.5) * 0.05
+      });
 
-    toast.success('Issue reported successfully! We will look into it.');
-    setForm({ title: '', category: 'pothole', description: '', location: '', priority: 'medium', image: null });
-    setShowForm(false);
+      toast.success('Issue reported successfully! We will look into it.');
+      setForm({ title: '', category: 'pothole', description: '', location: '', priority: 'medium', image: null });
+      setShowForm(false);
+    } catch (error) {
+      toast.error(error.message || 'Unable to report issue');
+    }
   };
 
-  const cityIssues = issues.filter(i => i.city === selectedCity?.id);
+  const cityIssues = selectedCity ? issues.filter(i => i.city === selectedCity.id) : [];
   const filteredIssues = filter === 'all' ? cityIssues : cityIssues.filter(i => i.status === filter);
 
   const getStatusInfo = (status) => {
     const map = {
       pending: { color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', icon: <FiClock size={14} />, label: 'Pending' },
-      in_progress: { color: '#3b82f6', bg: 'rgba(59,130,246,0.1)', icon: <FiAlertTriangle size={14} />, label: 'In Progress' },
+      'in-progress': { color: '#3b82f6', bg: 'rgba(59,130,246,0.1)', icon: <FiAlertTriangle size={14} />, label: 'In Progress' },
       resolved: { color: '#10b981', bg: 'rgba(16,185,129,0.1)', icon: <FiCheckCircle size={14} />, label: 'Resolved' }
     };
     return map[status] || map.pending;
@@ -176,7 +180,7 @@ const ReportIssue = () => {
         {[
           { value: 'all', label: 'All' },
           { value: 'pending', label: 'Pending' },
-          { value: 'in_progress', label: 'In Progress' },
+          { value: 'in-progress', label: 'In Progress' },
           { value: 'resolved', label: 'Resolved' }
         ].map(f => (
           <button
@@ -198,7 +202,7 @@ const ReportIssue = () => {
           <div className="empty-state">
             <span className="empty-icon">📋</span>
             <h3>No issues found</h3>
-            <p>There are no {filter !== 'all' ? filter.replace('_', ' ') : ''} issues in {selectedCity?.name}</p>
+            <p>There are no {filter !== 'all' ? filter.replace('-', ' ') : ''} issues in {selectedCity?.name}</p>
           </div>
         ) : (
           filteredIssues.map(issue => {
