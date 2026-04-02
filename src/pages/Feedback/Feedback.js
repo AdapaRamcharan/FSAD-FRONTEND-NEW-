@@ -55,7 +55,10 @@ const Feedback = () => {
     }
   };
 
-  const cityFeedbacks = feedbacks.filter(f => f.city === selectedCity?.id);
+  const cityFeedbacks = feedbacks.filter((f) => {
+    if (!selectedCity) return false;
+    return String(f.cityId ?? f.city) === String(selectedCity.id);
+  });
   const avgRating = cityFeedbacks.length > 0
     ? (cityFeedbacks.reduce((sum, f) => sum + f.rating, 0) / cityFeedbacks.length).toFixed(1)
     : 'N/A';

@@ -12,9 +12,7 @@ const ManageReports = () => {
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [adminComment, setAdminComment] = useState('');
 
-  const allIssues = selectedCity
-    ? issues.filter(i => i.city === selectedCity.id)
-    : issues;
+  const allIssues = issues;
 
   const filtered = allIssues.filter(issue => {
     const matchSearch = issue.title.toLowerCase().includes(search.toLowerCase()) ||

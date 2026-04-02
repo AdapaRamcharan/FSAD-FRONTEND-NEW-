@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiMapPin, FiRefreshCw, FiAlertCircle } from 'react-icons/fi';
 import { useCity } from '../../context/CityContext';
 import './Cities.css';
 
 const Cities = () => {
+  const navigate = useNavigate();
   const { cities, selectCity, selectedCity, cityLoading, cityError, refreshCities } = useCity();
 
   if (cityLoading) {
@@ -46,7 +48,7 @@ const Cities = () => {
               <div className="city-api-meta">
                 <span><FiMapPin size={12} /> {city.state || 'India'}</span>
               </div>
-              <button className="btn btn-primary" onClick={() => selectCity(city.id)}>
+              <button className="btn btn-primary" onClick={() => { selectCity(city.id); navigate('/user/city'); }}>
                 Select City
               </button>
             </div>

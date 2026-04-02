@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useCity } from '../../context/CityContext';
-import { cityData } from '../../data/cityData';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,14 +20,12 @@ import './Analytics.css';
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, ArcElement, Title, Tooltip, Legend, Filler);
 
 const Analytics = () => {
-  const { issues, feedbacks } = useCity();
+  const { issues, feedbacks, cities } = useCity();
   const [period, setPeriod] = useState('all');
 
-  const cities = Object.values(cityData);
-
   // Issues by city
-  const issuesByCity = cities.map(c => issues.filter(i => i.city === c.id).length);
-  const resolvedByCity = cities.map(c => issues.filter(i => i.city === c.id && i.status === 'resolved').length);
+  const issuesByCity = cities.map(c => issues.filter(i => String(i.cityId ?? i.city) === String(c.id)).length);
+  const resolvedByCity = cities.map(c => issues.filter(i => String(i.cityId ?? i.city) === String(c.id) && i.status === 'resolved').length);
 
   // Issue categories
   const categories = [...new Set(issues.map(i => i.category))];
@@ -244,7 +241,7 @@ const Analytics = () => {
           </thead>
           <tbody>
             {cities.map((city, i) => {
-              const cityIssues = issues.filter(is => is.city === city.id);
+              const cityIssues = issues.filter(is => String(is.cityId ?? is.city) === String(city.id));
               const cityResolved = cityIssues.filter(is => is.status === 'resolved').length;
               const cityPending = cityIssues.filter(is => is.status === 'pending').length;
               const rate = cityIssues.length > 0 ? ((cityResolved / cityIssues.length) * 100).toFixed(0) : 0;

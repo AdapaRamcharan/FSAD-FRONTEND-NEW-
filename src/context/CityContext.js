@@ -20,16 +20,24 @@ const fallbackById = cityData.reduce((acc, city) => {
   return acc;
 }, {});
 
+const cityHeroOverrides = {
+  hyderabad: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=1200&q=80',
+  mumbai: 'https://images.unsplash.com/photo-1595658658481-d53d3f999875?w=1200&q=80',
+  delhi: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&q=80',
+  chennai: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=1200&q=80'
+};
+
 const normalizeCity = (city) => {
   const fallback = fallbackById[city.id] || fallbackById[city.cityId] || fallbackById[slugify(city.name)] || cityData[0];
   const id = city.id || city.cityId || slugify(city.name || fallback.name);
+  const cityKey = slugify(city.name || fallback.name);
   return {
     ...fallback,
     ...city,
     id,
     name: city.name || fallback.name,
     description: city.description || fallback.description,
-    heroImage: city.imageUrl || city.image || fallback.heroImage,
+    heroImage: cityHeroOverrides[cityKey] || cityHeroOverrides[id] || city.imageUrl || city.image || fallback.heroImage,
     coverGradient: city.coverGradient || fallback.coverGradient,
     coordinates: city.coordinates || fallback.coordinates,
     amenities: city.amenities || fallback.amenities,
@@ -60,26 +68,50 @@ export const CityProvider = ({ children }) => {
   }, [cities, selectedCityId]);
 
   const normalizeStatus = (status) => {
-    if (status === 'in_progress') return 'in-progress';
-    return status || 'pending';
+    const value = (status || '').toString().trim().toLowerCase();
+    if (!value) return 'pending';
+    if (value === 'open') return 'pending';
+    if (value === 'in_progress') return 'in-progress';
+    if (value === 'in-progress') return 'in-progress';
+    if (value === 'closed') return 'resolved';
+    if (value === 'resolved') return 'resolved';
+    if (value === 'pending') return 'pending';
+    return 'pending';
+  };
+
+  const asNumericId = (value) => {
+    if (typeof value === 'number' && Number.isFinite(value)) return value;
+    if (typeof value === 'string' && value.trim()) {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+    return null;
   };
 
   const normalizeIssue = useCallback((issue) => ({
     ...issue,
     id: issue.id || issue.issueId || Date.now().toString(),
     status: normalizeStatus(issue.status),
-    city: issue.city || issue.cityId || issue.cityName,
-    createdAt: issue.createdAt || issue.createdOn || new Date().toISOString(),
-    updatedAt: issue.updatedAt || issue.lastUpdated || new Date().toISOString()
-  }), []);
+    city: typeof issue.city === 'object' && issue.city ? (issue.city.name || selectedCity?.name || 'City') : (issue.cityName || issue.city || issue.cityId),
+    cityId: typeof issue.city === 'object' && issue.city ? issue.city.id : (issue.cityId || asNumericId(issue.city)),
+    reportedBy: issue.reportedBy || issue.reporterName || issue.userName || issue.user?.username || issue.user?.name || 'Anonymous',
+    reporterEmail: issue.reporterEmail || issue.user?.email || '',
+    priority: (issue.priority || 'medium').toString().toLowerCase(),
+    location: issue.location || 'Not provided',
+    createdAt: issue.createdAt || issue.createdOn || issue.timestamp || new Date().toISOString(),
+    updatedAt: issue.updatedAt || issue.lastUpdated || issue.timestamp || new Date().toISOString()
+  }), [selectedCity]);
 
   const normalizeFeedback = useCallback((feedback) => ({
     ...feedback,
     id: feedback.id || feedback.feedbackId || Date.now().toString(),
-    city: feedback.city || feedback.cityId,
+    city: typeof feedback.city === 'object' && feedback.city ? (feedback.city.name || selectedCity?.name || 'City') : (feedback.cityName || feedback.city || feedback.cityId),
+    cityId: typeof feedback.city === 'object' && feedback.city ? feedback.city.id : (feedback.cityId || asNumericId(feedback.city)),
+    message: feedback.comment || feedback.message || '',
+    category: feedback.category || 'general',
     rating: Number(feedback.rating || 0),
-    createdAt: feedback.createdAt || new Date().toISOString()
-  }), []);
+    createdAt: feedback.timestamp || feedback.createdAt || new Date().toISOString()
+  }), [selectedCity]);
 
   const refreshCities = useCallback(async () => {
     setCityLoading(true);
@@ -103,7 +135,7 @@ export const CityProvider = ({ children }) => {
 
   const refreshIssues = useCallback(async () => {
     try {
-      const { data } = await getWithFallback(['/api/issues', '/issues']);
+      const { data } = await getWithFallback(['/api/admin/issues', '/api/issues', '/issues', '/admin/issues']);
       const apiIssues = asArray(data, ['issues']);
       setIssues(apiIssues.map(normalizeIssue));
     } catch {
@@ -113,7 +145,7 @@ export const CityProvider = ({ children }) => {
 
   const refreshFeedbacks = useCallback(async () => {
     try {
-      const { data } = await getWithFallback(['/api/feedback', '/feedbacks', '/feedback']);
+      const { data } = await getWithFallback(['/api/admin/feedback', '/api/feedback', '/feedbacks', '/feedback', '/admin/feedback']);
       const apiFeedbacks = asArray(data, ['feedbacks']);
       setFeedbacks(apiFeedbacks.map(normalizeFeedback));
     } catch {
@@ -122,11 +154,11 @@ export const CityProvider = ({ children }) => {
   }, [normalizeFeedback]);
 
   const refreshAdminData = useCallback(async () => {
-    if (user?.role !== 'admin') return;
+    if ((user?.role || '').toLowerCase() !== 'admin') return;
 
     try {
       const [usersRes, historyRes] = await Promise.all([
-        getWithFallback(['/api/users', '/users']),
+        getWithFallback(['/api/admin/users', '/api/users', '/users', '/admin/users']),
         getWithFallback(['/api/admin/login-history', '/api/login-history', '/admin/login-history'])
       ]);
 
@@ -165,17 +197,32 @@ export const CityProvider = ({ children }) => {
     refreshAdminData();
   }, [isAuthenticated, user?.role, refreshIssues, refreshFeedbacks, refreshAdminData]);
 
+  useEffect(() => {
+    if (!isAuthenticated) return undefined;
+
+    // Lightweight polling keeps citizen/admin dashboards synchronized without manual refresh.
+    const timer = setInterval(() => {
+      refreshIssues();
+      refreshFeedbacks();
+      refreshAdminData();
+    }, 8000);
+
+    return () => clearInterval(timer);
+  }, [isAuthenticated, refreshIssues, refreshFeedbacks, refreshAdminData]);
+
   const selectCity = (cityId) => {
     setSelectedCityId(cityId);
   };
 
   const addIssue = async (issue) => {
+    const resolvedCityId = asNumericId(issue.cityId) || asNumericId(issue.city) || asNumericId(selectedCity?.id);
     const payload = {
       ...issue,
-      cityId: issue.city,
-      city: issue.city,
+      city: resolvedCityId ? { id: resolvedCityId } : null,
+      user: user && user.id ? { id: user.id } : null,
       reporterName: issue.reportedBy,
-      reporterEmail: issue.reporterEmail
+      reporterEmail: issue.reporterEmail,
+      cityName: issue.cityName || selectedCity?.name
     };
 
     const { data } = await api.post('/api/issues', payload);
@@ -186,7 +233,8 @@ export const CityProvider = ({ children }) => {
 
   const updateIssueStatus = async (issueId, status, comment) => {
     const requestBody = { status, comment };
-    await api.put(`/api/issues/${issueId}/status`, requestBody);
+    // Wait, backend expects PUT with query param status: /api/admin/issues/{id}?status=XXX 
+    await api.put(`/api/admin/issues/${issueId}?status=${status}`, requestBody);
     setIssues((prev) =>
       prev.map((issue) =>
         issue.id === issueId
@@ -204,9 +252,13 @@ export const CityProvider = ({ children }) => {
   };
 
   const addFeedback = async (feedback) => {
+    const resolvedCityId = asNumericId(feedback.cityId) || asNumericId(feedback.city) || asNumericId(selectedCity?.id);
     const payload = {
       ...feedback,
-      cityId: feedback.city
+      comment: feedback.message, // Backend expects 'comment'
+      city: resolvedCityId ? { id: resolvedCityId } : null,
+      user: user && user.id ? { id: user.id } : null,
+      cityName: feedback.cityName || selectedCity?.name
     };
     const { data } = await api.post('/api/feedback', payload);
     const created = normalizeFeedback(data || payload);
@@ -218,7 +270,7 @@ export const CityProvider = ({ children }) => {
     const cityId = selectedCity?.id;
     const { data } = await api.get('/api/amenities/search', {
       params: {
-        q: query,
+        name: query,
         cityId
       }
     });

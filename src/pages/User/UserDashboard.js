@@ -21,7 +21,7 @@ const UserDashboard = () => {
 
   if (!city) return <div className="loading-state">Loading city data...</div>;
 
-  const userIssues = issues.filter(i => i.city === city.id);
+  const userIssues = issues.filter((i) => String(i.cityId ?? i.city) === String(city.id));
   const pendingCount = userIssues.filter(i => i.status === 'pending').length;
   const resolvedCount = userIssues.filter(i => i.status === 'resolved').length;
 

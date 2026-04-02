@@ -41,7 +41,11 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setAuthError('');
-      const { data } = await api.post('/auth/login', { email, password });
+      const { data } = await api.post(
+        '/auth/login',
+        { email, password },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
       const token = extractToken(data);
       const userData = mapUserFromResponse(data);
 
@@ -62,17 +66,19 @@ export const AuthProvider = ({ children }) => {
   const signup = async (userData) => {
     try {
       setAuthError('');
-      const { data } = await api.post('/auth/signup', userData);
-      const token = extractToken(data);
-      const sessionData = mapUserFromResponse(data.user ? data : { ...unwrapData(data), user: userData });
-
-      if (token) {
-        setAuthToken(token);
-      }
-
-      setUser(sessionData);
-      localStorage.setItem('smartcity_auth', JSON.stringify({ token: token || null, user: sessionData }));
-      return { success: true, user: sessionData };
+      const payload = {
+        username: userData.username,
+        email: userData.email,
+        password: userData.password,
+        role: userData.role
+      };
+      const { data } = await api.post(
+        '/auth/register',
+        payload,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      // Do not auto-login after signup, just return success
+      return { success: true, email: userData.email, message: 'Signup successful! Please sign in.' };
     } catch (error) {
       setAuthError(error.message);
       return { success: false, message: error.message || 'Signup failed' };

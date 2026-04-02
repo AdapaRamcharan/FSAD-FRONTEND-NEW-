@@ -55,7 +55,9 @@ const ReportIssue = () => {
     }
   };
 
-  const cityIssues = selectedCity ? issues.filter(i => i.city === selectedCity.id) : [];
+  const cityIssues = selectedCity
+    ? issues.filter((i) => String(i.cityId ?? i.city) === String(selectedCity.id))
+    : [];
   const filteredIssues = filter === 'all' ? cityIssues : cityIssues.filter(i => i.status === filter);
 
   const getStatusInfo = (status) => {

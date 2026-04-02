@@ -65,6 +65,19 @@ export const getWithFallback = async (paths) => {
   throw lastError || new Error('All API endpoints failed');
 };
 
+export const postWithFallback = async (paths, body, config = {}) => {
+  let lastError = null;
+  for (const path of paths) {
+    try {
+      const res = await api.post(path, body, config);
+      return res;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError || new Error('All API endpoints failed');
+};
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {

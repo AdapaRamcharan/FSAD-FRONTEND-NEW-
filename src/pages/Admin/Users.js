@@ -11,11 +11,11 @@ const Users = () => {
 
   const normalizedUsers = users.map((u, idx) => ({
     id: u.id || u.userId || idx + 1,
-    name: u.name || u.fullName || 'User',
+    name: u.username || u.name || u.fullName || 'User',
     email: u.email || 'N/A',
     role: (u.role || 'user').toLowerCase(),
     city: u.city || u.cityId || 'n/a',
-    avatar: u.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name || 'User')}&background=6366f1&color=fff`,
+    avatar: u.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.username || u.name || 'User')}&background=6366f1&color=fff`,
     joinDate: u.joinDate || u.createdAt || new Date().toISOString(),
     status: (u.status || 'active').toLowerCase()
   }));

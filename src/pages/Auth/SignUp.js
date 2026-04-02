@@ -11,7 +11,7 @@ const SignUp = () => {
   const { cities } = useCity();
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '', role: 'user', city: 'hyderabad' });
+  const [form, setForm] = useState({ username: '', email: '', password: '', confirmPassword: '', role: 'user', city: 'hyderabad' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -40,18 +40,14 @@ const SignUp = () => {
 
     try {
       const result = await signup({
-        name: form.name,
+        username: form.username,
         email: form.email,
         password: form.password,
-        role: form.role,
-        city: form.city
+        role: form.role
       });
       if (result.success) {
-        if (result.user.role === 'admin') {
-          navigate('/admin/dashboard');
-        } else {
-          navigate('/user/dashboard');
-        }
+        // Redirect to sign in page instead of auto-logging in
+        navigate('/signin', { state: { message: result.message, email: form.email } });
       } else {
         setError(result.message);
       }
@@ -130,8 +126,8 @@ const SignUp = () => {
                   <input
                     type="text"
                     placeholder="Enter your full name"
-                    value={form.name}
-                    onChange={e => setForm({ ...form, name: e.target.value })}
+                    value={form.username}
+                    onChange={e => setForm({ ...form, username: e.target.value })}
                     required
                   />
                 </div>

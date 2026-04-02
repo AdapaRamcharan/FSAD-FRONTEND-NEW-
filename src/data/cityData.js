@@ -171,7 +171,7 @@ export const cityData = [
     area: '603 km²',
     language: 'Marathi, Hindi, English',
     climate: 'Tropical monsoon',
-    heroImage: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=1200&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1595658658481-d53d3f999875?w=1200&q=80',
     coverGradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
     color: '#4facfe',
     coordinates: { lat: 19.0760, lng: 72.8777 },

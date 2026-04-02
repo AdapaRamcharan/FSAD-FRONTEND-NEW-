@@ -44,7 +44,7 @@ const AdminDashboard = () => {
     labels: cities.map(c => c.name),
     datasets: [{
       label: 'Issues',
-      data: cities.map(c => issues.filter(i => i.city === c.id).length),
+      data: cities.map(c => issues.filter(i => String(i.cityId ?? i.city) === String(c.id)).length),
       backgroundColor: ['#6366f1', '#f5576c', '#4facfe', '#43e97b'],
       borderRadius: 8,
       borderWidth: 0
@@ -264,8 +264,8 @@ const AdminDashboard = () => {
             <tbody>
               {recentIssues.map(issue => (
                 <tr key={issue.id}>
-                  <td className="td-id">#{issue.id.slice(-4)}</td>
-                  <td className="td-title">{issue.title.substring(0, 40)}...</td>
+                  <td className="td-id">#{String(issue.id).slice(-4)}</td>
+                  <td className="td-title">{(issue.title || '').substring(0, 40)}...</td>
                   <td><span className="category-tag">{issue.category?.replace('_', ' ')}</span></td>
                   <td><span className="city-tag"><FiMapPin size={12} /> {issue.city}</span></td>
                   <td>{getStatusBadge(issue.status)}</td>
@@ -283,7 +283,7 @@ const AdminDashboard = () => {
         <h3><FiBarChart2 size={18} /> City Health Overview</h3>
         <div className="city-health-grid">
           {cities.map(city => {
-            const cityIssues = issues.filter(i => i.city === city.id);
+            const cityIssues = issues.filter(i => String(i.cityId ?? i.city) === String(city.id));
             const cityResolved = cityIssues.filter(i => i.status === 'resolved').length;
             const resolutionRate = cityIssues.length > 0 ? Math.round((cityResolved / cityIssues.length) * 100) : 100;
             return (
