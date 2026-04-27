@@ -84,6 +84,22 @@ Important:
 - Use the backend base URL only (no trailing slash).
 - Backend must allow CORS from `https://fsad-frontend-new.onrender.com`.
 
+## Vercel Deployment Notes
+
+For Vercel deployment, keep frontend and backend URLs separated and configure API URL through environment variables.
+
+1. Import this GitHub repo into Vercel.
+2. In project settings, add environment variable:
+	- `REACT_APP_API_BASE_URL=https://<your-backend-service>.onrender.com`
+3. Redeploy the project after saving environment variables.
+
+This project includes `vercel.json` with SPA rewrite support, so routes like `/login`, `/signup`, and `/dashboard` work on refresh.
+
+Important:
+
+- Do not set API URL to localhost in Vercel.
+- Backend CORS must allow your Vercel domain, for example `https://<your-vercel-project>.vercel.app`.
+
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
