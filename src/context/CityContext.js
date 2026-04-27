@@ -88,6 +88,30 @@ export const CityProvider = ({ children }) => {
     return null;
   };
 
+  const resolveCityRecord = useCallback((value) => {
+    const rawValue = typeof value === 'object' && value ? (value.id || value.cityId || value.name) : value;
+    const lookupKey = slugify(rawValue || '');
+    return (
+      cities.find((city) => String(city.id) === String(rawValue)) ||
+      cities.find((city) => String(city.cityId) === String(rawValue)) ||
+      cities.find((city) => slugify(city.name) === lookupKey) ||
+      fallbackById[lookupKey] ||
+      null
+    );
+  }, [cities]);
+
+  const buildCityPayload = useCallback((value) => {
+    const matchedCity = resolveCityRecord(value) || selectedCity || null;
+    const cityId = matchedCity?.id ?? asNumericId(value) ?? null;
+    const cityName = matchedCity?.name || (typeof value === 'string' ? value : value?.name) || selectedCity?.name || '';
+
+    return {
+      city: cityId != null ? { id: cityId, name: cityName } : { name: cityName },
+      cityId: cityId != null ? cityId : undefined,
+      cityName
+    };
+  }, [resolveCityRecord, selectedCity]);
+
   const normalizeIssue = useCallback((issue) => ({
     ...issue,
     id: issue.id || issue.issueId || Date.now().toString(),
@@ -215,14 +239,14 @@ export const CityProvider = ({ children }) => {
   };
 
   const addIssue = async (issue) => {
-    const resolvedCityId = asNumericId(issue.cityId) || asNumericId(issue.city) || asNumericId(selectedCity?.id);
+    const cityPayload = buildCityPayload(issue.cityId || issue.city || selectedCity?.id || selectedCity?.name);
     const payload = {
       ...issue,
-      city: resolvedCityId ? { id: resolvedCityId } : null,
+      ...cityPayload,
       user: user && user.id ? { id: user.id } : null,
       reporterName: issue.reportedBy,
       reporterEmail: issue.reporterEmail,
-      cityName: issue.cityName || selectedCity?.name
+      cityName: issue.cityName || cityPayload.cityName
     };
 
     const { data } = await api.post('/api/issues', payload);
@@ -252,13 +276,13 @@ export const CityProvider = ({ children }) => {
   };
 
   const addFeedback = async (feedback) => {
-    const resolvedCityId = asNumericId(feedback.cityId) || asNumericId(feedback.city) || asNumericId(selectedCity?.id);
+    const cityPayload = buildCityPayload(feedback.cityId || feedback.city || selectedCity?.id || selectedCity?.name);
     const payload = {
       ...feedback,
       comment: feedback.message, // Backend expects 'comment'
-      city: resolvedCityId ? { id: resolvedCityId } : null,
+      ...cityPayload,
       user: user && user.id ? { id: user.id } : null,
-      cityName: feedback.cityName || selectedCity?.name
+      cityName: feedback.cityName || cityPayload.cityName
     };
     const { data } = await api.post('/api/feedback', payload);
     const created = normalizeFeedback(data || payload);
