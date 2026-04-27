@@ -65,6 +65,25 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/a
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
+## Render Deployment Notes
+
+If the deployed app shows `Network Error` on Sign In/Sign Up, the frontend is not reaching the backend API.
+
+Set this environment variable in Render for the frontend service:
+
+- `REACT_APP_API_BASE_URL=https://<your-backend-service>.onrender.com`
+
+Example:
+
+- `REACT_APP_API_BASE_URL=https://fsad-backend-new.onrender.com`
+
+After setting the variable, trigger a redeploy from Render.
+
+Important:
+
+- Use the backend base URL only (no trailing slash).
+- Backend must allow CORS from `https://fsad-frontend-new.onrender.com`.
+
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

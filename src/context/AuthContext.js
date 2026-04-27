@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
         password: userData.password,
         role: userData.role
       };
-      const { data } = await api.post(
+      await api.post(
         '/auth/register',
         payload,
         { headers: { 'Content-Type': 'application/json' } }

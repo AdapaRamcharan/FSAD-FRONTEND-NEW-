@@ -1,7 +1,23 @@
 import axios from 'axios';
 
+const normalizeBaseUrl = (value) => (value || '').trim().replace(/\/+$/, '');
+
+const resolveApiBaseUrl = () => {
+  const envBaseUrl = normalizeBaseUrl(process.env.REACT_APP_API_BASE_URL);
+  if (envBaseUrl) {
+    return envBaseUrl;
+  }
+
+  // Never default to localhost in production builds.
+  if (process.env.NODE_ENV === 'production') {
+    return '';
+  }
+
+  return 'http://localhost:8080';
+};
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080',
+  baseURL: resolveApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json'
   }
