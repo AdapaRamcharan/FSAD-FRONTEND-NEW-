@@ -164,14 +164,14 @@ const Feedback = () => {
               cityFeedbacks.slice(0, 10).map(fb => (
                 <div key={fb.id} className="fb-card">
                   <div className="fb-card-header">
-                    <img src={fb.userAvatar} alt="" className="fb-avatar" />
+                    <img src={fb.userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(fb.userName || 'User')}&background=6366f1&color=fff&size=128`} alt="" className="fb-avatar" />
                     <div>
-                      <span className="fb-name">{fb.userName}</span>
-                      <span className="fb-date">{new Date(fb.createdAt).toLocaleDateString()}</span>
+                      <span className="fb-name">{fb.userName || 'Anonymous'}</span>
+                      <span className="fb-date">{new Date(fb.createdAt || new Date()).toLocaleDateString()}</span>
                     </div>
                     <div className="fb-stars">
                       {[1, 2, 3, 4, 5].map(s => (
-                        <FiStar key={s} size={12} className={s <= fb.rating ? 'star-filled' : 'star-empty'} />
+                        <FiStar key={s} size={12} className={s <= (fb.rating || 0) ? 'star-filled' : 'star-empty'} />
                       ))}
                     </div>
                   </div>

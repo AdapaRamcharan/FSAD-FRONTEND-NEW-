@@ -134,6 +134,9 @@ export const CityProvider = ({ children }) => {
     message: feedback.comment || feedback.message || '',
     category: feedback.category || 'general',
     rating: Number(feedback.rating || 0),
+    userName: feedback.userName || feedback.user?.username || 'Anonymous',
+    userId: feedback.userId || feedback.user?.id,
+    userAvatar: feedback.userAvatar || feedback.user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(feedback.userName || 'User')}&background=6366f1&color=fff&size=128`,
     createdAt: feedback.timestamp || feedback.createdAt || new Date().toISOString()
   }), [selectedCity]);
 
