@@ -8,9 +8,11 @@ const resolveApiBaseUrl = () => {
     return envBaseUrl;
   }
 
-  // Never default to localhost in production builds.
   if (process.env.NODE_ENV === 'production') {
-    return '';
+    console.error(
+      'REACT_APP_API_BASE_URL is missing. Set it to your backend URL on Render and redeploy the frontend.'
+    );
+    return 'https://invalid-api-base-url.local';
   }
 
   return 'http://localhost:8080';

@@ -43,14 +43,20 @@ export const AuthProvider = ({ children }) => {
       setAuthError('');
       const { data } = await api.post(
         '/auth/login',
-        { email, password },
+        { username: email, email, password },
         { headers: { 'Content-Type': 'application/json' } }
       );
       const token = extractToken(data);
       const userData = mapUserFromResponse(data);
 
       if (!token) {
-        throw new Error('Login succeeded but no auth token was returned');
+        const rawResponse = unwrapData(data);
+        const looksLikeHtml = typeof rawResponse === 'string' && /<html|<!doctype html/i.test(rawResponse);
+        throw new Error(
+          looksLikeHtml
+            ? 'Login response came from the frontend origin, not the backend API. Set REACT_APP_API_BASE_URL in Render to your backend URL and redeploy.'
+            : 'Login succeeded but no auth token was returned by the backend'
+        );
       }
 
       setAuthToken(token);
